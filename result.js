@@ -6,9 +6,9 @@ const fs = require('fs');
 
 
 const startTime = new Date().getTime();
-const START_ROLL = 0;
-const END_ROLL = 0;
-const SEMESTER = 4; // 1,2,3,4,5,6,7,8
+const START_ROLL = process.argv[2] || 0;
+const END_ROLL = process.argv[3] || 0;
+const SEMESTER = process.argv[4] || 4; // 1,2,3,4,5,6,7,8
 scrap(START_ROLL,END_ROLL,SEMESTER)
 .then(() => {
     const time = (new Date().getTime() - startTime)/1000;

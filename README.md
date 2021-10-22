@@ -3,6 +3,15 @@ install dependencies
 ```
 npm run install
 ```
+#### To pass roll numbers and sem as command line arguments 
+```
+npm run start <starting_rollno> <ending_rollno> <sem>
+```
+example-
+```
+npm run start 12620002001 12620002080 2
+```
+#### To set roll number and sem manually:
 
 set starting roll, ending roll and semester number in result.js
 ```
