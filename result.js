@@ -3,7 +3,19 @@ const axios = require('axios').default;
 const URL = "http://136.232.2.202:8084/stud21i.aspx";
 const RESURL = "http://136.232.2.202:8084/hresult21i.aspx";
 const fs = require('fs');
-const qs = require('querystring');
+
+
+const startTime = new Date().getTime();
+const START_ROLL = 0;
+const END_ROLL = 0;
+const SEMESTER = 4; // 1,2,3,4,5,6,7,8
+scrap(START_ROLL,END_ROLL,SEMESTER)
+.then(() => {
+    const time = (new Date().getTime() - startTime)/1000;
+    console.log("Done in "+time+"s")
+})
+.catch(e => console.error(e.message));
+
 
 /**
  * 
@@ -69,12 +81,3 @@ async function scrap(start,end,sem){
     fs.writeFileSync(__dirname+'/'+fname,resString);
     console.log('Saved in '+fname);
 }
-
-const startTime = new Date().getTime();
-
-scrap(12619002001,12619002090,4)
-.then(() => {
-    const time = (new Date().getTime() - startTime)/1000;
-    console.log("Done in "+time+"s")
-})
-.catch(e => console.error(e.message));
