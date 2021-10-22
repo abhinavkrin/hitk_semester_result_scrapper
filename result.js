@@ -45,39 +45,48 @@ async function scrap(start,end,sem){
     let formBodyText = Object.keys(formData).map(key => key+'='+(formData[key]?formData[key]:'')).join('&')+'&PFAT=';
     let errors = 0, success = 0;
     for(let i=start; i<=end; i++){
-        try {
-            const body = formBodyText+'&roll='+i+'&sem='+sem+'&Button1=Show+Result';
-            const resultPage = await axios(RESURL,{
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                data: body
-            }); 
-            const $ = cheerio.load(resultPage.data);        
-            const res1 = {
-                roll: $("#lblroll").text().replace('Roll No.','').trim(),
-                name: $("#lblname").text().replace('Name','').trim(),
-                sgpa: parseFloat($("#lblbottom2").text().replace('EVEN(4th.) SEMESTER:','').replace('SGPA','').trim(),10)
-            }
-            if(res1.roll){
-                results.push(res1);
-                success++;
-                console.log('Roll '+i+' '+res1.name+' '+res1.sgpa+' OK');
-            } else {
-                throw new Error("Data not found for "+i);
-            }
-        } catch(e){
-            errors++;
-            console.log('Roll '+i+' Skipped');
-        }        
+        results.push(new Promise(async (resolve,reject )=> {
+            try {
+                const body = formBodyText+'&roll='+i+'&sem='+sem+'&Button1=Show+Result';
+                const resultPage = await axios(RESURL,{
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    data: body
+                }); 
+                const $ = cheerio.load(resultPage.data);        
+                const res1 = {
+                    roll: $("#lblroll").text().replace('Roll No.','').trim(),
+                    name: $("#lblname").text().replace('Name','').trim(),
+                    sgpa: parseFloat($("#lblbottom2").text().replace('EVEN(4th.) SEMESTER:','').replace('SGPA','').trim(),10)
+                }
+                if(res1.roll){
+                    resolve(res1);
+                    success++;
+                    console.log('Roll '+i+' '+res1.name+' '+res1.sgpa+' OK');
+                } else {
+                    throw new Error("Data not found for "+i);
+                }
+            } catch(e){
+                errors++;
+                console.log('Roll '+i+' Skipped');
+                resolve(null);
+            } 
+        }))       
     }
-    results.forEach(res => {
-        resString+=res.roll+','+res.name+','+res.sgpa+'\n';
+    Promise.all(results)
+    .then(data => {
+        data
+        .filter(d => d !== null)
+        .sort((a,b)=>b.sgpa-a.sgpa)
+        .forEach(res => {
+            resString+=res.roll+','+res.name+','+res.sgpa+'\n';
+        })
+        console.log("Success: ",success);
+        console.log("Error: ",errors);
+        const fname = sem+'sem_'+start+'to'+end+'.csv';
+        fs.writeFileSync(__dirname+'/'+fname,resString);
+        console.log('Saved in '+fname);
     })
-    console.log("Success: ",success);
-    console.log("Error: ",errors);
-    const fname = sem+'sem_'+start+'to'+end+'.csv';
-    fs.writeFileSync(__dirname+'/'+fname,resString);
-    console.log('Saved in '+fname);
 }
