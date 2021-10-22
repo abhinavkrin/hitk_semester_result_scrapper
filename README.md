@@ -1,4 +1,9 @@
 ### TO RUN
+install dependencies
+```
+npm run install
+```
+
 set starting roll, ending roll and semester number in result.js
 ```
 ...
