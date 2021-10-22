@@ -6,10 +6,10 @@ const fs = require('fs');
 
 
 const startTime = new Date().getTime();
-const START_ROLL = process.argv[2] || 0;
-const END_ROLL = process.argv[3] || 0;
-const SEMESTER = process.argv[4] || 4; // 1,2,3,4,5,6,7,8
-scrap(START_ROLL,END_ROLL,SEMESTER)
+const START_ROLL = process.argv[3] || 0;
+const END_ROLL = process.argv[4] || 0 || START_ROLL;
+const SEMESTER = process.argv[2] || 4; // 1,2,3,4,5,6,7,8
+scrap(SEMESTER,START_ROLL,END_ROLL)
 .then(() => {
     const time = (new Date().getTime() - startTime)/1000;
     console.log("Done in "+time+"s")
@@ -19,11 +19,11 @@ scrap(START_ROLL,END_ROLL,SEMESTER)
 
 /**
  * 
+ * @param {Number} sem 2, 4, 6 
  * @param {Number} start starting roll number
  * @param {Number} end ending roll number
- * @param {Number} sem 2, 4, 6 
  */
-async function scrap(start,end,sem){
+async function scrap(sem,start,end){
     const results = [];
     let resString = "";
     const response = await axios.get(URL);
