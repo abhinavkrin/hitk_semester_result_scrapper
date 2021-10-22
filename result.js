@@ -59,7 +59,7 @@ async function scrap(start,end,sem){
                 const res1 = {
                     roll: $("#lblroll").text().replace('Roll No.','').trim(),
                     name: $("#lblname").text().replace('Name','').trim(),
-                    sgpa: parseFloat($("#lblbottom2").text().replace('EVEN(4th.) SEMESTER:','').replace('SGPA','').trim(),10)
+                    sgpa: parseFloat($("#lblbottom2").text().split(/\s/).find(token => parseFloat(token)),10)
                 }
                 if(res1.roll){
                     resolve(res1);
