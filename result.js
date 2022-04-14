@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const axios = require('axios').default;
-const URL = "http://136.232.2.202:8084/stud21i.aspx";
-const RESURL = "http://136.232.2.202:8084/hresult21i.aspx";
+const URL = "http://136.232.2.202:8084/stud22o.aspx";
+const RESURL = "http://136.232.2.202:8084/hres22o.aspx";
 const fs = require('fs');
 
 
@@ -59,7 +59,7 @@ async function scrap(sem,start,end){
                 const res1 = {
                     roll: $("#lblroll").text().replace('Roll No.','').trim(),
                     name: $("#lblname").text().replace('Name','').trim(),
-                    sgpa: parseFloat($("#lblbottom2").text().split(/\s/).find(token => parseFloat(token)),10)
+                    sgpa: parseFloat($("#lblbottom1").text().split(/\s/).find(token => parseFloat(token)),10)
                 }
                 if(res1.roll){
                     resolve(res1);
