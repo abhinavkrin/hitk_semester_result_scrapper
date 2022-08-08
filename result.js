@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const axios = require('axios').default;
-const URL = "http://136.232.2.202:8084/stud22o.aspx";
-const RESURL = "http://136.232.2.202:8084/hres22o.aspx";
+const URL = "http://136.232.2.202:8084/stud22e.aspx";
+const RESURL = "http://136.232.2.202:8084/hres22e.aspx";
 const fs = require('fs');
 
 
@@ -59,12 +59,13 @@ async function scrap(sem,start,end){
                 const res1 = {
                     roll: $("#lblroll").text().replace('Roll No.','').trim(),
                     name: $("#lblname").text().replace('Name','').trim(),
-                    sgpa: parseFloat($("#lblbottom1").text().split(/\s/).find(token => parseFloat(token)),10)
+                    sgpa: parseFloat($("#lblbottom2").text().split(/\s/).find(token => parseFloat(token)),10),
+                    result: $('#lblbottom4').text().replace('RESULT','').trim()
                 }
                 if(res1.roll){
                     resolve(res1);
                     success++;
-                    console.log('Roll '+i+' '+res1.name+' '+res1.sgpa+' OK');
+                    console.log('Roll '+i+' '+res1.name+' '+res1.sgpa+''+res1.result+' OK');
                 } else {
                     throw new Error("Data not found for "+i);
                 }
@@ -81,7 +82,7 @@ async function scrap(sem,start,end){
         .filter(d => d !== null)
         .sort((a,b)=>b.sgpa-a.sgpa)
         .forEach(res => {
-            resString+=res.roll+','+res.name+','+res.sgpa+'\n';
+            resString+=res.roll+','+res.name+','+res.sgpa+','+res.result+'\n';
         })
         console.log("Success: ",success);
         console.log("Error: ",errors);
